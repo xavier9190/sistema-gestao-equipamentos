@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   pull_request:
@@ -16,9 +16,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npx prisma generate
       - run: npm run typecheck
       - run: npm run test
       - run: npm run build
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
-          AUTH_SECRET: "ci-placeholder-secret-at-least-32-chars"
