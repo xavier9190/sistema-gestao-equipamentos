@@ -3,9 +3,15 @@ node_modules/
 out/
 dist/
 .env
-.env*.local
+.env.*
+!.env.example
 .azure-devops.env
+*.pem
+*.key
 *.log
+coverage/
+.vitest*
 tsconfig.tsbuildinfo
 graphify-out/
 .DS_Store
+Thumbs.db
