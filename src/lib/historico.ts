@@ -1,5 +1,10 @@
-import type { EquipamentoStatus, MovimentacaoTipoEvento } from "@prisma/client";
+import type {
+  EquipamentoStatus,
+  MovimentacaoTipoEvento,
+  OcorrenciaTipo,
+} from "@prisma/client";
 import { STATUS_EQUIPAMENTO_UI, TIPO_EVENTO_LABEL } from "./equipamento-labels";
+import { OCORRENCIA_TIPO_LABEL } from "./ocorrencia";
 
 const VALID_TIPOS_EVENTO = new Set<MovimentacaoTipoEvento>([
   "CADASTRO",
@@ -105,13 +110,32 @@ export function formatarDetalhesMovimentacao(
     case "SINCRONIZACAO_PLANILHA":
       return "Sincronizado com planilha";
     case "OCORRENCIA": {
-      if (typeof obj.descricao === "string" && obj.descricao.trim()) {
-        return obj.descricao.trim();
+      const parts: string[] = [];
+      if (typeof obj.tipo === "string" && obj.tipo) {
+        const tipoLabel =
+          OCORRENCIA_TIPO_LABEL[obj.tipo as OcorrenciaTipo] ?? obj.tipo;
+        parts.push(`Tipo: ${tipoLabel}`);
       }
-      return "Ocorrência registrada";
+      if (typeof obj.motivo === "string" && obj.motivo.trim()) {
+        parts.push(obj.motivo.trim());
+      } else if (typeof obj.descricao === "string" && obj.descricao.trim()) {
+        parts.push(obj.descricao.trim());
+      }
+      if (typeof obj.statusDestino === "string") {
+        const statusInfo =
+          STATUS_EQUIPAMENTO_UI[obj.statusDestino as EquipamentoStatus];
+        parts.push(
+          `Situação: ${statusInfo ? statusInfo.label : obj.statusDestino}`
+        );
+      }
+      return parts.join(" · ") || "Ocorrência registrada";
     }
-    case "REPOSICAO":
+    case "REPOSICAO": {
+      if (typeof obj.motivo === "string" && obj.motivo.trim()) {
+        return obj.motivo.trim();
+      }
       return "Reposição / retorno da manutenção concluído";
+    }
   }
 }
 

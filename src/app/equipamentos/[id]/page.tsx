@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HistoricoTimeline } from "@/components/historico-timeline";
+import { OcorrenciasEquipamento } from "@/components/ocorrencias-equipamento";
 import { formatarCodigoEquipamento } from "@/lib/codigo-interno";
 import { calcularStatusEmprestimo } from "@/lib/emprestimo-status";
 import {
@@ -55,6 +56,7 @@ export default async function FichaEquipamentoPage({
             include: {
               responsavel: {
                 select: {
+                  id: true,
                   matricula: true,
                   nome: true,
                   tipo: true,
@@ -256,6 +258,20 @@ export default async function FichaEquipamentoPage({
           </ul>
         </section>
       )}
+
+      <OcorrenciasEquipamento
+        equipamentoId={equipamento.id}
+        equipamentoStatus={equipamento.status}
+        responsavelAtivo={
+          emprestimoAtivo
+            ? {
+                id: emprestimoAtivo.responsavel.id,
+                nome: emprestimoAtivo.responsavel.nome,
+                matricula: emprestimoAtivo.responsavel.matricula,
+              }
+            : null
+        }
+      />
 
       <HistoricoTimeline mode="equipamento" entityId={equipamento.id} />
     </main>
