@@ -10,7 +10,7 @@
 - [ ] **PBI-00.1 (`#335`)** — Discovery: obter amostra real do Google Sheets de patrimônio e alinhar com o projeto de inventário *(tasks de entrevista já `Done`; falta amostra da planilha)*
 - [ ] **PBI-00.3 (`#346`)** — Protótipos: validar ajustes das telas com a coordenação (remoção de "Docente responsável" e busca por matrícula) *(wireframes já `Done`)*
 - [ ] **PBI-00.5 (`#358`)** — Setup TypeScript: criar projeto **Next.js (App Router) + TypeScript + Tailwind + Prisma + PostgreSQL**, ambiente local e deploy com HTTPS
-- [ ] **PBI-00.4 (`#352`)** — Modelagem e Banco: schema Prisma, migrations, constraints (duplo empréstimo bloqueado, `Movimentacao` imutável) e seeds (categorias + conta única da Coordenação)
+- [x] **PBI-00.4 (`#352`)** — Modelagem e Banco: schema Prisma, migrations, constraints (duplo empréstimo bloqueado, `Movimentacao` imutável) e seeds (categorias + conta única da Coordenação)
 
 ---
 
