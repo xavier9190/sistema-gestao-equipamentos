@@ -6,3 +6,169 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum EquipamentoStatus {
+  DISPONIVEL
+  EMPRESTADO
+  EM_MANUTENCAO
+  EXTRAVIADO
+}
+
+enum EstadoConservacao {
+  BOM
+  REGULAR
+  COM_DEFEITO
+  DANIFICADO
+}
+
+enum ResponsavelTipo {
+  DOCENTE
+  DISCENTE
+  SERVIDOR
+}
+
+enum CondicaoDevolucao {
+  BOM_ESTADO
+  COM_DEFEITO
+  DANIFICADO
+}
+
+enum OcorrenciaTipo {
+  PERDA
+  DANO
+  DEFEITO
+}
+
+enum MovimentacaoTipoEvento {
+  CADASTRO
+  SINCRONIZACAO_PLANILHA
+  RETIRADA
+  DEVOLUCAO
+  OCORRENCIA
+  REPOSICAO
+}
+
+model CoordenacaoUser {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  senhaHash        String
+  tentativasFalhas Int       @default(0)
+  bloqueadoAte     DateTime?
+  criadoEm         DateTime  @default(now())
+  atualizadoEm     DateTime  @updatedAt
+}
+
+model Categoria {
+  id           String        @id @default(cuid())
+  nome         String        @unique
+  descricao    String?
+  equipamentos Equipamento[]
+  criadoEm     DateTime      @default(now())
+  atualizadoEm DateTime      @updatedAt
+}
+
+model Equipamento {
+  id                     String            @id @default(cuid())
+  nome                   String
+  codigoPatrimonio       String?           @unique
+  codigoInterno          String?           @unique
+  categoriaId            String
+  categoria              Categoria         @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
+  localizacao            String
+  estadoConservacao      EstadoConservacao @default(BOM)
+  valorAproximado        Decimal?          @db.Decimal(10, 2)
+  emprestavel            Boolean           @default(true)
+  status                 EquipamentoStatus @default(DISPONIVEL)
+  equipamentoPrincipalId String?
+  equipamentoPrincipal   Equipamento?      @relation("AcessoriosVinculados", fields: [equipamentoPrincipalId], references: [id], onDelete: SetNull)
+  acessorios             Equipamento[]     @relation("AcessoriosVinculados")
+  emprestimoItens        EmprestimoItem[]
+  ocorrencias            Ocorrencia[]
+  movimentacoes          Movimentacao[]
+  criadoEm               DateTime          @default(now())
+  atualizadoEm           DateTime          @updatedAt
+
+  @@index([categoriaId])
+  @@index([status])
+  @@index([equipamentoPrincipalId])
+}
+
+model Responsavel {
+  id            String          @id @default(cuid())
+  matricula     String          @unique
+  nome          String
+  tipo          ResponsavelTipo
+  contato       String
+  ativo         Boolean         @default(true)
+  emprestimos   Emprestimo[]
+  ocorrencias   Ocorrencia[]
+  movimentacoes Movimentacao[]
+  criadoEm      DateTime        @default(now())
+  atualizadoEm  DateTime        @updatedAt
+}
+
+model Emprestimo {
+  id                String           @id @default(cuid())
+  responsavelId     String
+  responsavel       Responsavel      @relation(fields: [responsavelId], references: [id], onDelete: Restrict)
+  retiradoEm        DateTime         @default(now())
+  previsaoDevolucao DateTime?
+  motivo            String
+  encerradoEm       DateTime?
+  itens             EmprestimoItem[]
+  criadoEm          DateTime         @default(now())
+  atualizadoEm      DateTime         @updatedAt
+
+  @@index([responsavelId])
+  @@index([encerradoEm, previsaoDevolucao])
+}
+
+model EmprestimoItem {
+  id                String             @id @default(cuid())
+  emprestimoId      String
+  emprestimo        Emprestimo         @relation(fields: [emprestimoId], references: [id], onDelete: Cascade)
+  equipamentoId     String
+  equipamento       Equipamento        @relation(fields: [equipamentoId], references: [id], onDelete: Restrict)
+  devolvidoEm       DateTime?
+  condicaoDevolucao CondicaoDevolucao?
+  ocorrencias       Ocorrencia[]
+  criadoEm          DateTime           @default(now())
+  atualizadoEm      DateTime           @updatedAt
+
+  @@index([emprestimoId])
+  @@index([equipamentoId])
+}
+
+model Ocorrencia {
+  id                   String          @id @default(cuid())
+  equipamentoId        String
+  equipamento          Equipamento     @relation(fields: [equipamentoId], references: [id], onDelete: Restrict)
+  emprestimoItemId     String?
+  emprestimoItem       EmprestimoItem? @relation(fields: [emprestimoItemId], references: [id], onDelete: SetNull)
+  responsavelId        String?
+  responsavel          Responsavel?    @relation(fields: [responsavelId], references: [id], onDelete: SetNull)
+  tipo                 OcorrenciaTipo
+  descricao            String
+  deveRepor            Boolean         @default(false)
+  reposicaoConcluidaEm DateTime?
+  criadoEm             DateTime        @default(now())
+
+  @@index([equipamentoId])
+  @@index([responsavelId, deveRepor, reposicaoConcluidaEm])
+}
+
+model Movimentacao {
+  id            String                 @id @default(cuid())
+  equipamentoId String?
+  equipamento   Equipamento?           @relation(fields: [equipamentoId], references: [id], onDelete: Restrict)
+  responsavelId String?
+  responsavel   Responsavel?           @relation(fields: [responsavelId], references: [id], onDelete: SetNull)
+  tipoEvento    MovimentacaoTipoEvento
+  detalhes      Json
+  registradoPor String                 @default("Coordenação")
+  ocorridoEm    DateTime               @default(now())
+
+  @@index([equipamentoId, ocorridoEm])
+  @@index([responsavelId, ocorridoEm])
+  @@index([tipoEvento, ocorridoEm])
+}
