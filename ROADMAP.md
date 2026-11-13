@@ -17,7 +17,7 @@
 ## Bloco 1 — Acesso e Inventário Vivo (1ª entrega demonstrável)
 - [x] **PBI-01 (`#366`)** — Login da Coordenação (conta compartilhada, bloqueio após 5 tentativas)
 - [ ] **PBI-09 (`#393`)** — Sincronização com **Google Sheets** + botão **"Atualizar planilha"** (upsert cadastral sem sobrescrever status/histórico)
-- [ ] **PBI-02 (`#376`)** — Cadastro manual de itens sem patrimônio (`INT-XXXX` para chaves/carregadores), vínculo de acessório e etiqueta QR Code
+- [x] **PBI-02 (`#376`)** — Cadastro manual de itens sem patrimônio (`INT-XXXX` para chaves/carregadores), vínculo de acessório e etiqueta QR Code
 - [ ] **PBI-04 (`#382`)** — Listagem, busca, filtros e Ficha do Equipamento
 
 ---

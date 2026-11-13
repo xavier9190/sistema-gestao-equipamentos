@@ -1,4 +1,5 @@
-﻿import { LogoutButton } from "@/components/logout-button";
+﻿import Link from "next/link";
+import { LogoutButton } from "@/components/logout-button";
 
 export default function HomePage() {
   return (
@@ -9,6 +10,22 @@ export default function HomePage() {
       <p className="mt-2 text-sm text-neutral-600">
         IFPE Campus Belo Jardim — Coordenação autenticada.
       </p>
+
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <Link
+          href="/equipamentos"
+          className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-800"
+        >
+          Equipamentos
+        </Link>
+        <Link
+          href="/equipamentos/novo"
+          className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
+        >
+          Novo item +
+        </Link>
+      </div>
+
       <LogoutButton />
     </main>
   );
