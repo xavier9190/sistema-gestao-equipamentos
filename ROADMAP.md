@@ -34,7 +34,7 @@
 ## Bloco 3 — Auditoria, Ocorrências e Entrega Final (até 11/12/2026)
 - [x] **PBI-10 (`#417`)** — **Histórico imutável** (linha do tempo por equipamento e por responsável)
 - [x] **PBI-11 (`#422`)** — **Ocorrências** (perda, dano, defeito + reposição pendente e baixa quando reposto)
-- [ ] **PBI-12 (`#427`)** — **Exportação CSV** de relatórios para conferência e auditorias
+- [x] **PBI-12 (`#427`)** — **Exportação CSV** de relatórios para conferência e auditorias
 - [ ] **PBI-13 (`#433`)** — Qualidade transversal (segurança, backup/restore, acessibilidade e LGPD)
 - [ ] **PBI-14 (`#439`)** — UAT (homologação com cenários reais junto à coordenação)
 - [ ] **PBI-15 (`#445`)** — Deploy final em produção, importação da base real e monitoramento
