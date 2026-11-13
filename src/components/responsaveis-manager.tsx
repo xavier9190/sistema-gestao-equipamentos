@@ -2,6 +2,7 @@
 
 import type { ResponsavelTipo } from "@prisma/client";
 import { useState, type FormEvent } from "react";
+import { HistoricoTimeline } from "@/components/historico-timeline";
 import { RESPONSAVEL_TIPO_LABEL } from "@/lib/responsavel";
 import type { ResponsavelResumo } from "./responsavel-busca";
 
@@ -26,6 +27,9 @@ export function ResponsaveisManager({
   const [contato, setContato] = useState("");
   const [erroForm, setErroForm] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
+  const [historicoResp, setHistoricoResp] = useState<ResponsavelResumo | null>(
+    null
+  );
 
   async function recarregar(
     nextQ = q,
@@ -335,6 +339,21 @@ export function ResponsaveisManager({
                     <div className="flex items-center justify-end gap-2">
                       <button
                         type="button"
+                        onClick={() =>
+                          setHistoricoResp((prev) =>
+                            prev?.id === item.id ? null : item
+                          )
+                        }
+                        className={`rounded-md border px-2.5 py-1 text-xs font-medium ${
+                          historicoResp?.id === item.id
+                            ? "border-emerald-700 bg-emerald-50 text-emerald-800"
+                            : "border-neutral-300 text-neutral-700 hover:bg-neutral-100"
+                        }`}
+                      >
+                        Histórico
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => abrirEdicao(item)}
                         className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
                       >
@@ -353,6 +372,29 @@ export function ResponsaveisManager({
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {historicoResp && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-neutral-800">
+              Histórico de {historicoResp.nome} ({historicoResp.matricula})
+            </p>
+            <button
+              type="button"
+              onClick={() => setHistoricoResp(null)}
+              className="text-xs font-medium text-neutral-500 hover:text-neutral-800"
+            >
+              Fechar histórico
+            </button>
+          </div>
+          <HistoricoTimeline
+            key={historicoResp.id}
+            mode="responsavel"
+            entityId={historicoResp.id}
+            title={`Linha do tempo — ${historicoResp.nome}`}
+          />
         </div>
       )}
     </div>

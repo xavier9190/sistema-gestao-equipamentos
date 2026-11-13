@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { HistoricoTimeline } from "@/components/historico-timeline";
 import { formatarCodigoEquipamento } from "@/lib/codigo-interno";
 import { calcularStatusEmprestimo } from "@/lib/emprestimo-status";
 import {
   ESTADO_CONSERVACAO_LABEL,
   STATUS_EQUIPAMENTO_UI,
-  TIPO_EVENTO_LABEL,
 } from "@/lib/equipamento-labels";
 import { prisma } from "@/lib/prisma";
 
@@ -64,13 +64,6 @@ export default async function FichaEquipamentoPage({
               itens: { select: { devolvidoEm: true } },
             },
           },
-        },
-      },
-      movimentacoes: {
-        orderBy: { ocorridoEm: "desc" },
-        take: 10,
-        include: {
-          responsavel: { select: { nome: true, matricula: true } },
         },
       },
     },
@@ -264,42 +257,7 @@ export default async function FichaEquipamentoPage({
         </section>
       )}
 
-      <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-        <h2 className="text-sm font-semibold text-neutral-900 uppercase">
-          Movimentações recentes
-        </h2>
-        {equipamento.movimentacoes.length === 0 ? (
-          <p className="mt-3 text-sm text-neutral-600">
-            Nenhuma movimentação registrada.
-          </p>
-        ) : (
-          <ul className="mt-3 divide-y divide-neutral-200 text-sm">
-            {equipamento.movimentacoes.map((mov) => (
-              <li
-                key={mov.id}
-                className="flex flex-wrap items-center justify-between gap-2 py-2.5"
-              >
-                <div>
-                  <span className="font-medium text-neutral-900">
-                    {TIPO_EVENTO_LABEL[mov.tipoEvento]}
-                  </span>
-                  {mov.responsavel && (
-                    <span className="ml-2 text-neutral-600">
-                      • {mov.responsavel.nome} ({mov.responsavel.matricula})
-                    </span>
-                  )}
-                  <span className="ml-2 text-xs text-neutral-500">
-                    por {mov.registradoPor}
-                  </span>
-                </div>
-                <span className="text-xs text-neutral-500">
-                  {formatDateTime(mov.ocorridoEm)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <HistoricoTimeline mode="equipamento" entityId={equipamento.id} />
     </main>
   );
 }
