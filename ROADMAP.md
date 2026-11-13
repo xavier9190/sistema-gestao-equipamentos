@@ -23,7 +23,7 @@
 ---
 
 ## Bloco 2 — Operação de Balcão (2ª entrega — substitui o caderno)
-- [ ] **PBI-03 (`#371`)** — Cadastro e busca de **Responsáveis por matrícula** (com cadastro rápido no balcão, sem docente supervisor)
+- [x] **PBI-03 (`#371`)** — Cadastro e busca de **Responsáveis por matrícula** (com cadastro rápido no balcão, sem docente supervisor)
 - [ ] **PBI-05 (`#387`)** — Leitor de código unificado (**leitor USB + câmera `html5-qrcode` + digitação manual**)
 - [ ] **PBI-06 (`#399`)** — Registro de **Empréstimo** (acessório vinculado automático/desmarcável + alerta visual de reposição pendente sem bloqueio)
 - [ ] **PBI-07 (`#405`)** — Registro de **Devolução** (conferência item a item, devolução parcial e condição do item)

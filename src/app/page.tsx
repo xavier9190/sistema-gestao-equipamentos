@@ -19,6 +19,12 @@ export default function HomePage() {
           Equipamentos
         </Link>
         <Link
+          href="/responsaveis"
+          className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 transition hover:bg-neutral-50"
+        >
+          Responsáveis
+        </Link>
+        <Link
           href="/equipamentos/novo"
           className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
         >
