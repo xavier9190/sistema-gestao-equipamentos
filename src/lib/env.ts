@@ -14,9 +14,9 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): AppEnv {
   const parsed = envSchema.safeParse(rawEnv);
   if (!parsed.success) {
     const details = parsed.error.issues
-      .map((issue) => ${issue.path.join(".")}: )
+      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
       .join("; ");
-    throw new Error(Invalid environment configuration: );
+    throw new Error(`Invalid environment configuration: ${details}`);
   }
   return parsed.data;
 }
