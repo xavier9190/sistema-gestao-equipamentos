@@ -137,6 +137,8 @@ model EmprestimoItem {
 
   @@index([emprestimoId])
   @@index([equipamentoId])
+  @@index([emprestimoId, devolvidoEm])
+  @@index([equipamentoId, devolvidoEm])
 }
 
 model Ocorrencia {

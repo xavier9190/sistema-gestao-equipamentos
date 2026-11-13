@@ -13,6 +13,12 @@ export default function HomePage() {
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <Link
+          href="/painel"
+          className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 transition hover:bg-neutral-50"
+        >
+          Painel de situação
+        </Link>
+        <Link
           href="/emprestimos/novo"
           className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-800"
         >

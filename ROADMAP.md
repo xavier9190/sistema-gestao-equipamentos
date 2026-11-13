@@ -27,7 +27,7 @@
 - [x] **PBI-05 (`#387`)** — Leitor de código unificado (**leitor USB + câmera `html5-qrcode` + digitação manual**)
 - [x] **PBI-06 (`#399`)** — Registro de **Empréstimo** (acessório vinculado automático/desmarcável + alerta visual de reposição pendente sem bloqueio)
 - [x] **PBI-07 (`#405`)** — Registro de **Devolução** (conferência item a item, devolução parcial e condição do item)
-- [ ] **PBI-08 (`#411`)** — **Painel de Situação** (contadores por status e lista de empréstimos em aberto / atrasados)
+- [x] **PBI-08 (`#411`)** — **Painel de Situação** (contadores por status e lista de empréstimos em aberto / atrasados)
 
 ---
 
