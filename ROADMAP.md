@@ -13,9 +13,9 @@
 - [x] **PBI-00.4 (`#352`)** — Modelagem e Banco: schema Prisma, migrations, constraints (duplo empréstimo bloqueado, `Movimentacao` imutável) e seeds (categorias + conta única da Coordenação)
 
 ---
-
+        
 ## Bloco 1 — Acesso e Inventário Vivo (1ª entrega demonstrável)
-- [ ] **PBI-01 (`#366`)** — Login da Coordenação (conta compartilhada, bloqueio após 5 tentativas)
+- [x] **PBI-01 (`#366`)** — Login da Coordenação (conta compartilhada, bloqueio após 5 tentativas)
 - [ ] **PBI-09 (`#393`)** — Sincronização com **Google Sheets** + botão **"Atualizar planilha"** (upsert cadastral sem sobrescrever status/histórico)
 - [ ] **PBI-02 (`#376`)** — Cadastro manual de itens sem patrimônio (`INT-XXXX` para chaves/carregadores), vínculo de acessório e etiqueta QR Code
 - [ ] **PBI-04 (`#382`)** — Listagem, busca, filtros e Ficha do Equipamento

@@ -1,4 +1,4 @@
-import { randomBytes, scryptSync } from "node:crypto";
+import { hashPassword } from "./password.ts";
 
 export interface CategoriaSeed {
   nome: string;
@@ -17,12 +17,7 @@ export const DEFAULT_CATEGORIAS: readonly CategoriaSeed[] = [
 export const DEFAULT_COORDENACAO_EMAIL = "coordenacao@belojardim.ifpe.edu.br";
 const DEV_FALLBACK_PASSWORD = "coordenacao-dev-password";
 
-/** Hashes a plaintext password using scrypt with a random 16-byte salt. */
-export function hashPassword(password: string): string {
-  const salt = randomBytes(16).toString("hex");
-  const derivedKey = scryptSync(password, salt, 64).toString("hex");
-  return `scrypt$${salt}$${derivedKey}`;
-}
+export { hashPassword };
 
 export interface SeedDbClient {
   categoria: {
