@@ -1,46 +1,49 @@
-import type { EquipamentoStatus } from "@prisma/client";
 import Link from "next/link";
 import { LogoutButton } from "@/components/logout-button";
 import { formatarCodigoEquipamento } from "@/lib/codigo-interno";
+import {
+  buildEquipamentoWhere,
+  parseEquipamentoFiltros,
+} from "@/lib/equipamento-filtro";
+import { STATUS_EQUIPAMENTO_UI } from "@/lib/equipamento-labels";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-const STATUS_BADGE: Record<
-  EquipamentoStatus,
-  { label: string; className: string }
-> = {
-  DISPONIVEL: {
-    label: "Disponível",
-    className: "bg-emerald-50 text-emerald-800",
-  },
-  EMPRESTADO: {
-    label: "Emprestado",
-    className: "bg-blue-50 text-blue-800",
-  },
-  EM_MANUTENCAO: {
-    label: "Em manutenção",
-    className: "bg-amber-50 text-amber-900",
-  },
-  EXTRAVIADO: {
-    label: "Extraviado",
-    className: "bg-red-50 text-red-800",
-  },
-};
+export default async function EquipamentosPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const rawParams = await searchParams;
+  const filtros = parseEquipamentoFiltros(rawParams);
+  const hasActiveFilters = Boolean(
+    filtros.q ||
+      filtros.categoriaId ||
+      filtros.status ||
+      filtros.localizacao ||
+      filtros.emprestavel !== undefined
+  );
 
-export default async function EquipamentosPage() {
-  const equipamentos = await prisma.equipamento.findMany({
-    orderBy: { criadoEm: "desc" },
-    include: {
-      categoria: { select: { nome: true } },
-      equipamentoPrincipal: {
-        select: { nome: true, codigoInterno: true, codigoPatrimonio: true },
+  const [equipamentos, categorias] = await Promise.all([
+    prisma.equipamento.findMany({
+      where: buildEquipamentoWhere(filtros),
+      orderBy: { criadoEm: "desc" },
+      include: {
+        categoria: { select: { nome: true } },
+        equipamentoPrincipal: {
+          select: { id: true, nome: true, codigoInterno: true, codigoPatrimonio: true },
+        },
       },
-    },
-  });
+    }),
+    prisma.categoria.findMany({
+      orderBy: { nome: "asc" },
+      select: { id: true, nome: true },
+    }),
+  ]);
 
   return (
-    <main className="mx-auto max-w-5xl p-6">
+    <main className="mx-auto max-w-6xl p-6">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <Link
@@ -53,7 +56,10 @@ export default async function EquipamentosPage() {
             Equipamentos
           </h1>
           <p className="text-sm text-neutral-600">
-            Itens cadastrados no inventário da Coordenação.
+            {equipamentos.length}{" "}
+            {equipamentos.length === 1
+              ? "equipamento encontrado"
+              : "equipamentos encontrados"}
           </p>
         </div>
 
@@ -70,20 +76,154 @@ export default async function EquipamentosPage() {
         </div>
       </header>
 
+      <form
+        method="GET"
+        action="/equipamentos"
+        className="mb-6 grid gap-3 rounded-xl border border-neutral-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-6"
+      >
+        <div className="lg:col-span-2">
+          <label
+            htmlFor="q"
+            className="block text-xs font-medium text-neutral-600"
+          >
+            Buscar por nome ou código
+          </label>
+          <input
+            id="q"
+            name="q"
+            type="search"
+            defaultValue={filtros.q ?? ""}
+            placeholder="Ex: Notebook, PAT 0001, INT-0001"
+            className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-1.5 text-sm focus:border-emerald-600 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="categoriaId"
+            className="block text-xs font-medium text-neutral-600"
+          >
+            Categoria
+          </label>
+          <select
+            id="categoriaId"
+            name="categoriaId"
+            defaultValue={filtros.categoriaId ?? ""}
+            className="mt-1 block w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm focus:border-emerald-600 focus:outline-none"
+          >
+            <option value="">Todas</option>
+            {categorias.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label
+            htmlFor="status"
+            className="block text-xs font-medium text-neutral-600"
+          >
+            Situação
+          </label>
+          <select
+            id="status"
+            name="status"
+            defaultValue={filtros.status ?? ""}
+            className="mt-1 block w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm focus:border-emerald-600 focus:outline-none"
+          >
+            <option value="">Todas</option>
+            <option value="DISPONIVEL">Disponível</option>
+            <option value="EMPRESTADO">Emprestado</option>
+            <option value="EM_MANUTENCAO">Em manutenção</option>
+            <option value="EXTRAVIADO">Extraviado</option>
+          </select>
+        </div>
+
+        <div>
+          <label
+            htmlFor="localizacao"
+            className="block text-xs font-medium text-neutral-600"
+          >
+            Localização
+          </label>
+          <input
+            id="localizacao"
+            name="localizacao"
+            type="text"
+            defaultValue={filtros.localizacao ?? ""}
+            placeholder="Ex: Coordenação"
+            className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-1.5 text-sm focus:border-emerald-600 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="emprestavel"
+            className="block text-xs font-medium text-neutral-600"
+          >
+            Emprestável
+          </label>
+          <select
+            id="emprestavel"
+            name="emprestavel"
+            defaultValue={
+              filtros.emprestavel === undefined
+                ? ""
+                : String(filtros.emprestavel)
+            }
+            className="mt-1 block w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm focus:border-emerald-600 focus:outline-none"
+          >
+            <option value="">Todos</option>
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+          </select>
+        </div>
+
+        <div className="flex items-center justify-end gap-2 sm:col-span-2 lg:col-span-6">
+          {hasActiveFilters && (
+            <Link
+              href="/equipamentos"
+              className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
+            >
+              Limpar filtros
+            </Link>
+          )}
+          <button
+            type="submit"
+            className="rounded-lg bg-neutral-900 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-neutral-800"
+          >
+            Filtrar
+          </button>
+        </div>
+      </form>
+
       {equipamentos.length === 0 ? (
         <section className="rounded-xl border border-dashed border-neutral-300 bg-white p-10 text-center">
           <p className="text-sm text-neutral-600">
-            Nenhum equipamento cadastrado ainda.
+            {hasActiveFilters
+              ? "Nenhum equipamento encontrado com os filtros aplicados."
+              : "Nenhum equipamento cadastrado ainda."}
           </p>
-          <Link
-            href="/equipamentos/novo"
-            className="mt-4 inline-block rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
-          >
-            Cadastrar primeiro item
-          </Link>
+          {hasActiveFilters ? (
+            <Link
+              href="/equipamentos"
+              className="mt-4 inline-block rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+            >
+              Limpar filtros
+            </Link>
+          ) : (
+            <Link
+              href="/equipamentos/novo"
+              className="mt-4 inline-block rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800"
+            >
+              Cadastrar primeiro item
+            </Link>
+          )}
         </section>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
+        <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-white shadow-sm">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-neutral-200 bg-neutral-50 text-xs font-semibold text-neutral-600 uppercase">
               <tr>
@@ -91,7 +231,7 @@ export default async function EquipamentosPage() {
                 <th className="px-4 py-3">Equipamento</th>
                 <th className="px-4 py-3">Categoria</th>
                 <th className="px-4 py-3">Localização</th>
-                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Situação</th>
                 <th className="px-4 py-3 text-right">Ações</th>
               </tr>
             </thead>
@@ -101,21 +241,42 @@ export default async function EquipamentosPage() {
                 const principalCode = item.equipamentoPrincipal
                   ? formatarCodigoEquipamento(item.equipamentoPrincipal)
                   : null;
-                const badge = STATUS_BADGE[item.status];
+                const badge = STATUS_EQUIPAMENTO_UI[item.status];
 
                 return (
                   <tr key={item.id} className="hover:bg-neutral-50">
                     <td className="px-4 py-3 font-mono text-xs font-semibold text-neutral-800">
-                      {codigo}
+                      <Link
+                        href={`/equipamentos/${item.id}`}
+                        className="hover:text-emerald-700 hover:underline"
+                      >
+                        {codigo}
+                      </Link>
                     </td>
                     <td className="px-4 py-3">
-                      <p className="font-medium text-neutral-900">{item.nome}</p>
+                      <Link
+                        href={`/equipamentos/${item.id}`}
+                        className="font-medium text-neutral-900 hover:text-emerald-700 hover:underline"
+                      >
+                        {item.nome}
+                      </Link>
+                      {!item.emprestavel && (
+                        <span className="ml-2 rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-600">
+                          Não emprestável
+                        </span>
+                      )}
                       {item.equipamentoPrincipal && (
                         <p className="text-xs text-neutral-500">
-                          Acessório de {item.equipamentoPrincipal.nome}
-                          {principalCode && principalCode !== "-"
-                            ? ` (${principalCode})`
-                            : ""}
+                          Acessório de{" "}
+                          <Link
+                            href={`/equipamentos/${item.equipamentoPrincipal.id}`}
+                            className="hover:underline"
+                          >
+                            {item.equipamentoPrincipal.nome}
+                            {principalCode && principalCode !== "-"
+                              ? ` (${principalCode})`
+                              : ""}
+                          </Link>
                         </p>
                       )}
                     </td>
@@ -132,17 +293,23 @@ export default async function EquipamentosPage() {
                         {badge.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      {item.codigoInterno ? (
+                    <td className="px-4 py-3 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-2">
                         <Link
-                          href={`/equipamentos/${item.id}/etiqueta`}
+                          href={`/equipamentos/${item.id}`}
                           className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
                         >
-                          Imprimir etiqueta
+                          Ficha
                         </Link>
-                      ) : (
-                        <span className="text-xs text-neutral-400">—</span>
-                      )}
+                        {item.codigoInterno && (
+                          <Link
+                            href={`/equipamentos/${item.id}/etiqueta`}
+                            className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
+                          >
+                            Imprimir etiqueta
+                          </Link>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );

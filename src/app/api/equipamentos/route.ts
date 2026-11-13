@@ -5,6 +5,10 @@ import {
   cadastrarEquipamentoManual,
   EquipamentoCadastroError,
 } from "@/lib/equipamento-cadastro";
+import {
+  buildEquipamentoWhere,
+  parseEquipamentoFiltros,
+} from "@/lib/equipamento-filtro";
 import { logger } from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 
@@ -23,8 +27,18 @@ const criarEquipamentoSchema = z.object({
   equipamentoPrincipalId: z.string().trim().nullable().optional(),
 });
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const filtros = parseEquipamentoFiltros({
+    q: searchParams.get("q") ?? undefined,
+    categoriaId: searchParams.get("categoriaId") ?? undefined,
+    status: searchParams.get("status") ?? undefined,
+    localizacao: searchParams.get("localizacao") ?? undefined,
+    emprestavel: searchParams.get("emprestavel") ?? undefined,
+  });
+
   const equipamentos = await prisma.equipamento.findMany({
+    where: buildEquipamentoWhere(filtros),
     orderBy: { criadoEm: "desc" },
     include: {
       categoria: { select: { id: true, nome: true } },
