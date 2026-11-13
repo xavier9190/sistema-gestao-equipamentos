@@ -4,6 +4,7 @@ out/
 dist/
 .env
 .env*.local
+.azure-devops.env
 *.log
 tsconfig.tsbuildinfo
 graphify-out/
