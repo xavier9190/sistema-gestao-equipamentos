@@ -131,59 +131,63 @@ export function PainelSituacao() {
 
       {resumo && (
         <>
-          <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+          <section className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 lg:grid-cols-6">
             <Link
               href="/equipamentos"
-              className="rounded-xl border border-neutral-200 bg-white p-4 shadow-xs transition hover:border-neutral-300"
+              className="rounded-xl border border-neutral-200 bg-white p-3 shadow-xs transition hover:border-neutral-300 sm:p-4"
             >
-              <p className="text-xs font-medium text-neutral-500">
+              <p className="text-[11px] font-medium text-neutral-500 sm:text-xs">
                 Total de equipamentos
               </p>
-              <p className="mt-1 text-2xl font-bold text-neutral-900">
+              <p className="mt-1 text-xl font-bold text-neutral-900 sm:text-2xl">
                 {resumo.contadores.totalEquipamentos}
               </p>
             </Link>
 
             <Link
               href="/equipamentos?status=DISPONIVEL"
-              className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 shadow-xs transition hover:border-emerald-300"
+              className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3 shadow-xs transition hover:border-emerald-300 sm:p-4"
             >
-              <p className="text-xs font-medium text-emerald-800">
+              <p className="text-[11px] font-medium text-emerald-800 sm:text-xs">
                 Disponíveis
               </p>
-              <p className="mt-1 text-2xl font-bold text-emerald-900">
+              <p className="mt-1 text-xl font-bold text-emerald-900 sm:text-2xl">
                 {resumo.contadores.disponiveis}
               </p>
             </Link>
 
             <Link
               href="/equipamentos?status=EMPRESTADO"
-              className="rounded-xl border border-blue-200 bg-blue-50/60 p-4 shadow-xs transition hover:border-blue-300"
+              className="rounded-xl border border-blue-200 bg-blue-50/60 p-3 shadow-xs transition hover:border-blue-300 sm:p-4"
             >
-              <p className="text-xs font-medium text-blue-800">Emprestados</p>
-              <p className="mt-1 text-2xl font-bold text-blue-900">
+              <p className="text-[11px] font-medium text-blue-800 sm:text-xs">
+                Emprestados
+              </p>
+              <p className="mt-1 text-xl font-bold text-blue-900 sm:text-2xl">
                 {resumo.contadores.emprestados}
               </p>
             </Link>
 
             <Link
               href="/equipamentos?status=EM_MANUTENCAO"
-              className="rounded-xl border border-amber-200 bg-amber-50/60 p-4 shadow-xs transition hover:border-amber-300"
+              className="rounded-xl border border-amber-200 bg-amber-50/60 p-3 shadow-xs transition hover:border-amber-300 sm:p-4"
             >
-              <p className="text-xs font-medium text-amber-800">
+              <p className="text-[11px] font-medium text-amber-800 sm:text-xs">
                 Em manutenção
               </p>
-              <p className="mt-1 text-2xl font-bold text-amber-900">
+              <p className="mt-1 text-xl font-bold text-amber-900 sm:text-2xl">
                 {resumo.contadores.emManutencao}
               </p>
             </Link>
 
             <Link
               href="/equipamentos?status=EXTRAVIADO"
-              className="rounded-xl border border-red-200 bg-red-50/60 p-4 shadow-xs transition hover:border-red-300"
+              className="rounded-xl border border-red-200 bg-red-50/60 p-3 shadow-xs transition hover:border-red-300 sm:p-4"
             >
-              <p className="text-xs font-medium text-red-800">Extraviados</p>
-              <p className="mt-1 text-2xl font-bold text-red-900">
+              <p className="text-[11px] font-medium text-red-800 sm:text-xs">
+                Extraviados
+              </p>
+              <p className="mt-1 text-xl font-bold text-red-900 sm:text-2xl">
                 {resumo.contadores.extraviados}
               </p>
             </Link>
@@ -191,12 +195,12 @@ export function PainelSituacao() {
             <button
               type="button"
               onClick={() => setFiltro("ATRASADOS")}
-              className="rounded-xl border border-red-300 bg-red-50 p-4 text-left shadow-xs transition hover:border-red-400"
+              className="rounded-xl border border-red-300 bg-red-50 p-3 text-left shadow-xs transition hover:border-red-400 sm:p-4"
             >
-              <p className="text-xs font-medium text-red-800">
+              <p className="text-[11px] font-medium text-red-800 sm:text-xs">
                 Empréstimos atrasados
               </p>
-              <p className="mt-1 text-2xl font-bold text-red-900">
+              <p className="mt-1 text-xl font-bold text-red-900 sm:text-2xl">
                 {resumo.contadores.emprestimosAtrasados}
               </p>
               <p className="mt-0.5 text-[11px] text-red-700">

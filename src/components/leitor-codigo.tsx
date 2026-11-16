@@ -211,32 +211,13 @@ export function LeitorCodigo({
       </form>
 
       <div
+        id={scannerRegionId}
         className={
           cameraAtiva
-            ? "relative mx-auto max-w-md overflow-hidden rounded-xl border border-neutral-300 bg-black"
+            ? "mx-auto max-w-md overflow-hidden rounded-xl border border-neutral-300 bg-black"
             : "hidden"
         }
-      >
-        <div id={scannerRegionId} className="w-full" />
-
-        {cameraAtiva && (
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-6"
-          >
-            <div className="relative h-[58%] w-[82%] rounded-lg border-2 border-emerald-400/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.45)]">
-              <span className="absolute -top-1 -left-1 h-5 w-5 rounded-tl-md border-t-4 border-l-4 border-emerald-400" />
-              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-tr-md border-t-4 border-r-4 border-emerald-400" />
-              <span className="absolute -bottom-1 -left-1 h-5 w-5 rounded-bl-md border-b-4 border-l-4 border-emerald-400" />
-              <span className="absolute -right-1 -bottom-1 h-5 w-5 rounded-br-md border-r-4 border-b-4 border-emerald-400" />
-              <div className="absolute inset-x-3 top-1/2 h-0.5 -translate-y-1/2 animate-pulse bg-emerald-400/90 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
-            </div>
-            <p className="relative z-10 mt-3 rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white">
-              Alinhe o código de barras ou QR Code na moldura
-            </p>
-          </div>
-        )}
-      </div>
+      />
 
       {erro && (
         <div
